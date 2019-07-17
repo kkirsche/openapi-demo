@@ -71,9 +71,9 @@ def update(fighter_id):
         abort(404)
     if not request.json:
         abort(400)
-    if "name" not in request.json and type(request.json["name"]) != str:
+    if "name" not in request.json and type(request.json.get("name")) != str:
         abort(400)
-    if "weightclass" not in request.json and type(request.json["weightclass"]) != str:
+    if "weightclass" not in request.json and type(request.json.get("weightclass")) != str:
         abort(400)
 
     fighter[0]["name"] = request.json.get("name", fighter[0]["name"])
@@ -90,7 +90,7 @@ def destroy(fighter_id):
     if len(fighter) == 0:
         abort(404)
     fighters.remove(fighter[0])
-    return jsonify(fighter)
+    return jsonify({"fighter": fighter[0]})
 
 
 @app.errorhandler(400)
