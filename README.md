@@ -4,6 +4,8 @@ This application is designed to assist with learning how to work with the OpenAP
 
 ## Usage
 
+### Application
+
 To use the application locally, the following commands (prefixed by `$` to indicate that these should be run from a terminal):
 
 ```shell
@@ -15,6 +17,17 @@ $ flask run
 ```
 
 This will begin the application on port 5000 bound to localhost (127.0.0.1).
+
+### Unit Tests
+
+To run the unit tests for the API, the following commands may be used. This assumes that the virtual environment from the Application Usage was not completed yet.
+
+```shell
+$ python3 -m venv venv
+$ source ./venv/bin/activate
+$ python3 -m pip -r requirements.txt
+$ pytest -v
+```
 
 ## Endpoints
 
