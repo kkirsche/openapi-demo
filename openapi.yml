@@ -11,12 +11,15 @@ servers:
     description: "Development server"
 tags:
   - name: "Fighters"
+  - name: "Multiple Items"
+  - name: "Individual Item"
 paths:
   /fighters:
     summary: "Interact with figher data"
     get:
       tags:
         - "Fighters"
+        - "Multiple Items"
       summary: "List all championship UFC fighters"
       operationId: "ListAllFighters"
       responses:
@@ -26,16 +29,133 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Fighters"
+    post:
+      tags:
+        - "Fighters"
+        - "Individual Item"
+      summary: "Create a new UFC fighter championship"
+      operationId: "CreateNewFighter"
+      requestBody:
+        description: "The fighter's name and weightclass which we would like to create"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Fighter"
+        required: true
+      responses:
+        '200':
+          description: "Successfully updated the requested fighter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndividualFighter"
+        '400':
+          description: "The required information about the fighter was not provided (requires: fighter name and weightclass)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "400 - Bad Request"
+  '/fighters/{fighterId}':
+    parameters:
+      - name: "fighterId"
+        in: "path"
+        required: true
+        description: "The id of the fighter to operate on"
+        schema:
+          type: "integer"
+          format: "int64"
+          minimum: 1
+          maximum: 12
+    get:
+      summary: "Information about a specific fighter"
+      operationId: "ListSpecificFighter"
+      tags:
+        - "Fighters"
+        - "Individual Item"
+      responses:
+        '200':
+          description: "Successfully retrieved the requested fighter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndividualFighter"
+        '404':
+          description: "Could not find the fighter with provided ID number"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: "Update a specific fighter"
+      operationId: "UpdateSpecificFighter"
+      tags:
+        - "Fighters"
+        - "Individual Item"
+      requestBody:
+        description: "The details about the current championship fighter at a specific weightclass"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Fighter"
+        required: true
+      responses:
+        '200':
+          description: "Successfully updated the requested fighter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndividualFighter"
+        '400':
+          description: "The required information about the fighter was not provided (requires: fighter name and weightclass)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: "400 - Bad Request"
+        '404':
+          description: "Could not find the fighter with provided ID number"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: "Delete a specific fighter"
+      operationId: "DeleteSpecificFighter"
+      tags:
+        - "Fighters"
+        - "Individual Item"
+      responses:
+        '200':
+          description: "Successfully deleted the requested fighter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndividualFighter"
+        '404':
+          description: "Could not find the fighter with provided ID number"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Fighters:
       type: "array"
       items:
         $ref: "#/components/schemas/Fighter"
+    IndividualFighter:
+      type: "object"
+      required:
+        - "fighter"
+      properties:
+        fighter:
+          $ref: "#/components/schemas/Fighter"
     Fighter:
       type: "object"
       required:
-        - "id"
         - "name"
         - "weightclass"
       properties:
@@ -51,3 +171,12 @@ components:
         id: 1
         name: Daniel Cormier
         weightclass: "Heavyweight (Up to 265 pounds)"
+    Error:
+      type: "object"
+      required:
+        - "error"
+      properties:
+        error:
+          type: "string"
+      example:
+        error: "404 - Not Found"
